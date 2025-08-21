@@ -48,7 +48,7 @@ jobs:
       - name: run commands
         run: | 
           touch text.txt
-          "This is a text" > text.txt
+          echo "This is a text" > text.txt
           
         
   
