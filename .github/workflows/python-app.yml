@@ -5,9 +5,8 @@ name: Python application
 
 on:
   push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
+    tags:
+      - 'v*.*.*'
 
 permissions:
   contents: read
@@ -34,9 +33,13 @@ jobs:
 
     runs-on: aws
 
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Get the tag
+      - uses: olegtarasov/get-tag@v2.1.4
+        id: tagName
+      - name: Use tag
+        run: echo "Tag is ${{ steps.tagName.outputs.tag }}"
+      
       - name: Run SSH command to remote VM
         uses: appleboy/ssh-action@v1
         with:
@@ -45,9 +48,15 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
           script: |
-            touch /home/ubuntu/text.txt
-            echo "This is a text" > /home/ubuntu/text.txt
-      
+            git clone https://github.com/rahul-08-11/ci-and-cd-aws.git
+            cd ci-and-cd-aws/
+            sudo docker build -t  ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }} .
+            ## clean docker
+            sudo docker container stop $(docker container ls -q --filter name=ci-and-cd-aws/dev*)
+            sudo docker container rm $(docker container ls -aq --filter name=ci-and-cd-aws/dev*)
+            ## run new version of dev
+            sudo docker run -p 8000:8000 ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }}
+            
   
         
     
