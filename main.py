@@ -10,7 +10,6 @@ app = FastAPI()
 async def get_home():
     return {"message": "Hello World from dev branch"}
 
-
 async def get_username(username : str) -> UserItem:
     return UserItem(username=username)
 
@@ -21,6 +20,9 @@ async def get_user_new(query = Depends(get_username)):
         "username": query.username
     }
 
+@app.get("/product/{product_name}")
+async def get_user(product_name: int):
+    return {"product name": product_name}
 
 if __name__ == "__main__":
     import uvicorn
