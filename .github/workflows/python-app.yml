@@ -50,8 +50,9 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
           script: |
-            git clone https://github.com/rahul-08-11/ci-and-cd-aws.git
+            git clone https://github.com/rahul-08-11/ci-and-cd-aws.git || echo "The repo is already cloned!"
             cd ci-and-cd-aws/
+            git pull
             sudo docker build -t  ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }} .
             ## clean docker
             sudo docker container stop $(sudo docker container ls -q)
