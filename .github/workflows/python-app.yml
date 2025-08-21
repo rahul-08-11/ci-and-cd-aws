@@ -61,8 +61,8 @@ jobs:
             cd ci-and-cd-aws/
             sudo docker build -t  ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }} .
             ## clean docker
-            sudo docker container stop $(docker container ls -q --filter name=ci-and-cd-aws/dev:${{ steps.previous_tag.outputs.previous_tag }})
-            sudo docker container rm $(docker container ls -aq --filter name=ci-and-cd-aws/dev:${{ steps.previous_tag.outputs.previous_tag }})
+            sudo docker container stop $(sudo docker container ls -q)
+            sudo docker container rm $(sudo docker container ls -q)
             ## run new version of dev
             sudo docker run -p 8000:8000 ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }}
             
