@@ -41,6 +41,14 @@ jobs:
       - name: Use tag
         run: echo "Tag is ${{ steps.tagName.outputs.tag }}"
       
+      - name: Get previous tag
+        id: previous_tag
+        run: |
+          git fetch --tags
+          PREVIOUS_TAG=$(git tag --sort="-committerdate" | sed -n 2p)
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+
+
       - name: Run SSH command to remote VM
         uses: appleboy/ssh-action@v1
         with:
@@ -53,8 +61,8 @@ jobs:
             cd ci-and-cd-aws/
             sudo docker build -t  ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }} .
             ## clean docker
-            sudo docker container stop $(docker container ls -q --filter name=ci-and-cd-aws/dev*)
-            sudo docker container rm $(docker container ls -aq --filter name=ci-and-cd-aws/dev*)
+            sudo docker container stop $(docker container ls -q --filter name=ci-and-cd-aws/dev:${{ steps.previous_tag.outputs.previous_tag }})
+            sudo docker container rm $(docker container ls -aq --filter name=ci-and-cd-aws/dev:${{ steps.previous_tag.outputs.previous_tag }})
             ## run new version of dev
             sudo docker run -p 8000:8000 ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }}
             
