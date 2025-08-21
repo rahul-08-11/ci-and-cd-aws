@@ -35,8 +35,9 @@ jobs:
 
     steps:
       - name: Get the tag
-      - uses: olegtarasov/get-tag@v2.1.4
+        uses: olegtarasov/get-tag@v2.1.4
         id: tagName
+
       - name: Use tag
         run: echo "Tag is ${{ steps.tagName.outputs.tag }}"
       
