@@ -8,7 +8,7 @@ app = FastAPI()
 
 @app.get("/")
 async def get_home():
-    return {"message": "Hello World"}
+    return {"message": "Hello World from dev branch"}
 
 
 async def get_username(username : str) -> UserItem:
