@@ -37,20 +37,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-      - name: Deploy to EC2
-        uses: actions/setup-python@v3
+      - name: Run SSH command to remote VM
+        uses: appleboy/ssh-action@v1
         with:
-          python-version: "3.10"
-      - name: run commands
-        run: | 
-          touch text.txt
-          echo "This is a text" > text.txt
-          
-        
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          port: 22
+          script: |
+            touch /home/ubuntu/text.txt
+            echo "This is a text" > /home/ubuntu/text.txt
+      
   
         
     
