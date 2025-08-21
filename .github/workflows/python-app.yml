@@ -54,12 +54,11 @@ jobs:
             cd ci-and-cd-aws/
             git pull
             sudo docker build -t  ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }} .
-            ## clean docker
-            sudo docker container stop $(sudo docker container ls -q)
-            sudo docker container rm $(sudo docker container ls -q)
-            ## run new version of dev
+            ## stop dev container running at port 8000
+            sudo docker stop $(sudo docker ps -aq --filter "publish=8000")
+            ## run new version at port 8000
             sudo docker run -d -p 8000:8000 ci-and-cd-aws/dev:${{ steps.tagName.outputs.tag }}
-            sudo docker system prune -a --volumes -f
+            # sudo docker system prune -a --volumes -f
 
             
   
