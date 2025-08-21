@@ -17,7 +17,9 @@ async def get_username(username : str) -> UserItem:
 @app.get("/user")
 async def get_user_new(query = Depends(get_username)):
     
-    return query.username
+    return {
+        "username": query.username
+    }
 
 
 if __name__ == "__main__":
